@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Scanner;
 
 @SpringBootApplication
-public class Mode1Application {
+public class Mode2Application {
 
     public static void main(String[] args) {
         for (int i=0;i<10;i++){
