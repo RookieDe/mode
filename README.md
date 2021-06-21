@@ -90,7 +90,31 @@
 
 
 /*** 饿汉式（静态变量）*/
+```java
+/**
+* 饿汉式（静态变量）
+*/
+class Singleton{
+    /**
+     * 1.定义一个私有构造，防止外部new
+     */
+    private Singleton(){
+    }
 
+    /**
+     * 2.定义一个内部的对象实例
+     */
+    private final static Singleton instance = new Singleton();
+
+    /**
+     * 3.提供一个供外部调用的公有静态方法，返回实例对象
+     * @return
+     */
+    public static Singleton getInstance() {
+        return instance;
+    }
+}
+```
 
 ### 优缺点说明：
 1. 优点：这种写法比较简单，就是在类装载的时候就完成实例化。避免了线程同步问题；
