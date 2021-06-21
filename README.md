@@ -12,7 +12,7 @@
 
 
 ## 设计模式七大原则有：
-1. [单一职责原则]("1.单一职责原则")
+1. [单一职责原则]("sfd")
 2. 接口隔离原则
 3. 依赖倒置（倒转）原则
 4. 里氏替换原则
@@ -20,7 +20,7 @@
 6. 迪米特法则
 7. 合成复用原则
 
-### 1.单一职责原则
+### <a name="sfd" href="#danyi">1.单一职责原则</a>
 对类来说，即一个类应该只负责一项职责。如A负责不同的职责：职责1，职责2。当职责1需求变更而改变A时，可能造成职责2执行错误，所以需要将A的粒度分解为A1，A2。单一职责注意事项和细节
 1. 降低类的复杂度，一个类只负责一项职责。
 2. 提高类的可读性，可维护性。
@@ -89,7 +89,32 @@
 4. 代码实现:
 
 
-/*** 饿汉式（静态变量）*/class Singleton{    /**     * 1.定义一个私有构造，防止外部new     */    private Singleton(){    }    /**     * 2.定义一个内部的对象实例     */    private final static Singleton instance = new Singleton();    /**     * 3.提供一个供外部调用的公有静态方法，返回实例对象     * @return     */    public static Singleton getInstance() {        return instance;    }}
+/*** 饿汉式（静态变量）*/
+```java
+/**
+* 饿汉式（静态变量）
+*/
+class Singleton{
+    /**
+     * 1.定义一个私有构造，防止外部new
+     */
+    private Singleton(){
+    }
+
+    /**
+     * 2.定义一个内部的对象实例
+     */
+    private final static Singleton instance = new Singleton();
+
+    /**
+     * 3.提供一个供外部调用的公有静态方法，返回实例对象
+     * @return
+     */
+    public static Singleton getInstance() {
+        return instance;
+    }
+}
+```
 ### 优缺点说明：
 1. 优点：这种写法比较简单，就是在类装载的时候就完成实例化。避免了线程同步问题；
 2. 缺点：在类装载的时候就完成实例化，没有达到 Lazy Loading 的效果。如果从始至终从未使用过这个实例，则会造成内存的浪费；
