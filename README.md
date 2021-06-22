@@ -317,4 +317,3 @@ enum Singleton{
 ## 二：简单工厂模式
 
 刚开始玩，更新中...
-![img.png](img.png)
