@@ -369,19 +369,291 @@ public class OrderPizza {
 }
 ```
 
-#### 传统的方式的优缺点:
+##### 传统的方式的优缺点:
 1. 优点是比较好理解，简单易操作。
 2. 缺点是违反了设计模式的 ocp 原则原则，即对扩展开放，对修改关闭。即当我们给类增加新功能的时候，尽量不修改代码，或者尽可能少修改代码.
-3. 比如我们这时要新增加一个 Pizza 的种类的种类(Pepper 披萨披萨)，我们需要做如下修改.
+3. 比如我们这时要新增加一个 Pizza 的种类的种类(Pepper 披萨披萨)，我们就需要更改原来的代码；
 
+##### 改进的思路分析
+分析：修改代码可以接受，但是如果我们在其它的地方也有创建 Pizza 的代码，就意味着，也需要修改，而创建 Pizza的代码，往往有多处。
 
-    } else if ("cheese".equals(orderType)) {
-        pizza = new CheesePizza();
-        pizza.setName("cheese");
-    } else if ("ham".equals(orderType)){
-       pizza = new HamPizza();
-        pizza.setName("ham");
-    } else {
-        System.err.println("没有这个披萨！！ ");
-        return;
+思路：把创建把创建 Pizza 对象封装到一个类中，这样我们有新的这样我们有新的 Pizza 种类时种类时，只需要修改该类就可只需要修改该类就可，其它有创建到 Pizza对象的代码就不需要修改了.-> 简单工厂简单工厂模式。
+
+#### 基本介绍
+
+1. 简单工厂模式是属于创建型模式创建型模式，是工厂模式的一种。简单工厂模式是由一个工厂对象决定创建出哪一种产品类的实例。简单工厂模式是工厂模式家族中最简单实用的模式
+2. 简单工厂模式：定义了一个创建对象的类，由这个类来封装实例化对象的行为封装实例化对象的行为(代码)
+3. 在软件开发中，当我们会用到大量的创建某种、某类或者某批对象时，就会使用到工厂模式.
+
+#### 1.使用简单工厂模式
+简单工厂模式的设计方案: 定义一个可以实例化 Pizaa 对象的类，封装创建对象的代码。
+```java
+public class SimpleFactory {
+
+    public Pizza createPizza(String orderType) {
+        Pizza pizza = null;
+        if ("fruit".equals(orderType)) {
+            pizza = new FruitPizza();
+            pizza.setName("greek");
+        } else if ("cheese".equals(orderType)) {
+            pizza = new CheesePizza();
+            pizza.setName("cheese");
+        }
+        return pizza;
     }
+
+    /**
+     * 简单工厂模式 也叫 静态工厂模式
+     * @param orderType
+     * @return
+     */
+    public static Pizza createPizza2(String orderType) {
+        Pizza pizza = null;
+        if ("fruit".equals(orderType)) {
+            pizza = new FruitPizza();
+            pizza.setName("fruit");
+        } else if ("cheese".equals(orderType)) {
+            pizza = new CheesePizza();
+            pizza.setName("cheese");
+        }
+        return pizza;
+    }
+}
+
+
+public class OrderPizza2 {
+    Pizza pizza = null;
+    String orderType = "";
+    public OrderPizza2() {
+
+        do {
+            orderType = getType();
+            pizza = SimpleFactory.createPizza2(orderType);
+            if (pizza != null) {
+                pizza.prepare();
+                pizza.bake();
+                pizza.cut();
+                pizza.box();
+            } else {
+                System.out.println("没有找到披萨种类！！");
+                break;
+            }
+        } while (true);
+    }
+    private String getType() {
+        try {
+            BufferedReader strin = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("input pizza 披萨类型:");
+            String str = strin.readLine();
+            return str;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+}
+```
+
+### 工厂方法模式
+
+简单工厂模式的设计方案: 定义一个可以实例化 Pizaa 对象的类，封装创建对象的代码。
+
+看一个新的需求
+披萨项目新的需求：客户在点披萨时，可以点不同口味的披萨不同口味的披萨，比如 北京的奶酪 pizza、北京的水果 pizza 或者是伦敦的奶酪 pizza、伦敦的水果 pizza。
+
+思路 1
+使用简单工厂模式，创建不同的简单工厂类不同的简单工厂类，比如 BJPizzaSimpleFactory、LDPizzaSimpleFactory 等等.从当前
+这个案例来说，也是可以的，但是考虑到项目的规模，以及软件的可维护性、可扩展性并不是特别好
+
+思路 2
+使用工厂方法模式
+
+#### 工厂方法模式介绍
+1. 工厂方法模式设计方案：将披萨项目的实例化功能抽象成抽象方法，在不同的口味点餐子类中具体实现。
+2. 工厂方法模式：定义了一个创建对象的抽象方法，由子类决定要实例化的类类决定要实例化的类。工厂方法模式将对象的实例对象的实例化推迟到子类。
+
+### 抽象工厂模式
+1. 抽象工厂模式：定义了一个 interface 用于创建相关或有依赖关系的对象簇，而无需指明具体的类
+2. 抽象工厂模式可以将简单工厂模式和工厂方法模式进行整合。
+3. 从设计层面看，抽象工厂模式就是对简单工厂模式的改进(或者称为进一步的抽象)
+4. 将工厂抽象成两层两层，AbsFactory(抽象工厂抽象工厂) 和 具体实现的工厂子类具体实现的工厂子类。程序员可以根据创建对象类型使用对应的工厂子类。这样将单个的简单工厂类变成了工厂簇，更利于代码的维护和扩展。
+
+#### 工厂模式小结
+
+工厂模式的意义
+1. 将实例化对象的代码提取出来，放到一个类中统一管理和维护，达到和主项目的依赖关系的解耦。从而提高项目的扩展和维护性
+2. 三种工厂模式 (简单工厂模式、工厂方法模式、抽象工厂模式)
+3. 设计模式的依赖抽象原则
+    1. 创建对象实例时，不要直接 new 类, 而是把这个 new 类的动作放在一个工厂的方法中，并返回。有的书上说，变量不要直接持有具体类的引用。
+    2. 不要让类继承具体类，而是继承抽象类或者是实现 interface(接口)
+    3. 不要覆盖基类中已经实现的方法。
+
+入口类：
+```java
+public class PizzaStore {
+    public static void main(String[] args) {
+        new OrderPizza(new LDFactory());
+    }
+}
+```
+
+订单类:
+```java
+public class OrderPizza {
+
+    AbsFactory factory;
+
+    public OrderPizza(AbsFactory factory) {
+        setFactory(factory);
+    }
+
+    private void setFactory(AbsFactory factory) {
+        Pizza pizza = null;
+        String orderType = "";
+        this.factory = factory;
+        do {
+            orderType = getType();
+            pizza = factory.createPizza(orderType);
+            if (pizza != null) {
+                pizza.prepare();
+                pizza.bake();
+                pizza.cut();
+                pizza.box();
+            } else {
+                System.out.println("没有该披萨种类！");
+                break;
+            }
+        } while (true);
+    }
+
+    private String getType() {
+        try {
+            BufferedReader strin = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("input pizza type:");
+            String str = strin.readLine();
+            return str;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+}
+```
+
+抽象披萨类：
+```java
+public abstract class Pizza {
+    /**
+     * 披萨名称
+     */
+    protected String name;
+
+    /**
+     * 准备阶段制作方法
+     */
+    public abstract void prepare();
+
+    /**
+     * 烧烤制作披萨
+     */
+    public void bake() {
+        System.out.println(name + " baking;");
+    }
+
+    /**
+     *  切披萨
+     */
+    public void cut() {
+        System.out.println(name + " cutting;");
+    }
+
+    /**
+     * 盒子打包
+     */
+    public void box() {
+        System.out.println(name + " boxing;");
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+工厂接口：
+```java
+public interface AbsFactory {
+    Pizza createPizza(String orderType);
+}
+```
+
+抽象工厂方法：
+
+```java
+//北京披萨
+public class BJFactory implements AbsFactory{
+    @Override
+    public Pizza createPizza(String orderType) {
+        Pizza pizza = null;
+        if ("cheese".equals(orderType)) {
+            pizza = new BJCheesePizza();
+        } else if ("pepper".equals(orderType)) {
+            pizza = new LDPepperPizza();
+        }
+        return pizza;
+    }
+}
+
+//伦敦披萨
+public class LDFactory implements AbsFactory{
+    @Override
+    public Pizza createPizza(String orderType) {
+        Pizza pizza = null;
+        if ("cheese".equals(orderType)) {
+            pizza = new LDCheesePizza();
+        } else if ("pepper".equals(orderType)) {
+            pizza = new LDPepperPizza();
+        }
+        return pizza;
+    }
+}
+```
+
+工厂实现方法：
+```java
+//北京奶酪披萨
+public class BJCheesePizza  extends Pizza{
+    @Override
+    public void prepare() {
+        setName("北京奶酪披萨");
+        System.err.println("北京的奶酪披萨，准备原材料");
+    }
+}
+
+//北京胡椒披萨
+public class BJPepperPizza extends Pizza{
+    @Override
+    public void prepare() {
+        setName("北京胡椒披萨");
+        System.err.println("北京的胡椒披萨，准备原材料");
+    }
+}
+
+//伦敦奶酪披萨
+public class LDCheesePizza extends Pizza {
+    @Override
+    public void prepare() {
+        setName("伦敦奶酪披萨");
+        System.err.println("伦敦的奶酪披萨，准备原材料");
+    }
+}
+
+//伦敦胡椒披萨
+public class LDPepperPizza extends Pizza {
+    @Override
+    public void prepare() {
+        setName("伦敦胡椒披萨");
+        System.err.println("伦敦的胡椒披萨，准备原材料");
+    }
+}
+```
