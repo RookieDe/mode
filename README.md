@@ -314,6 +314,75 @@ enum Singleton{
 
 
 
-## 二：简单工厂模式
+## 二：工厂模式
 
-刚开始玩，更新中...
+### 简单工厂模式
+
+#### 看一个披萨的项目：
+要便于披萨种类的扩展，要便于维护
+1. 披萨的种类很多(比如 GreekPizz、CheesePizz 等)
+2. 披萨的制作有 prepare，bake, cut, box
+3. 完成披萨店订购功能。
+   
+使用传统的方式来完成:
+```java
+public class OrderPizza {
+
+    public  OrderPizza(){
+        Pizza pizza = null;
+        String orderType;
+
+        orderType = getType();
+        if ("fruit".equals(orderType)) {
+            pizza = new FruitPizza();
+            pizza.setName("fruit");
+        } else if ("cheese".equals(orderType)) {
+            pizza = new CheesePizza();
+            pizza.setName("cheese");
+        } else {
+            System.err.println("没有这个披萨！！ ");
+            return;
+        }
+        //披萨制作
+        pizza.prepare();
+        pizza.bake();
+        pizza.cut();
+        pizza.box();
+
+    }
+    
+    /**
+     * 获取订购的披萨
+     * @return
+     */
+    private String getType() {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        System.err.println("请输入要购买的披萨：");
+        try {
+            String s = bufferedReader.readLine();
+            return s;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+```
+
+#### 传统的方式的优缺点:
+1. 优点是比较好理解，简单易操作。
+2. 缺点是违反了设计模式的 ocp 原则原则，即对扩展开放，对修改关闭。即当我们给类增加新功能的时候，尽量不修改代码，或者尽可能少修改代码.
+3. 比如我们这时要新增加一个 Pizza 的种类的种类(Pepper 披萨披萨)，我们需要做如下修改.
+
+
+    } else if ("cheese".equals(orderType)) {
+        pizza = new CheesePizza();
+        pizza.setName("cheese");
+    } `else if ("ham".equals(orderType)){`
+       `pizza = new HamPizza();`
+        `pizza.setName("ham");`
+    } else {
+        System.err.println("没有这个披萨！！ ");
+        return;
+    }
+
