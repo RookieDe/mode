@@ -378,9 +378,9 @@ public class OrderPizza {
     } else if ("cheese".equals(orderType)) {
         pizza = new CheesePizza();
         pizza.setName("cheese");
-    } `else if ("ham".equals(orderType)){`
-       `pizza = new HamPizza();`
-        `pizza.setName("ham");`
+    } else if ("ham".equals(orderType)){
+       pizza = new HamPizza();
+        pizza.setName("ham");
     } else {
         System.err.println("没有这个披萨！！ ");
         return;
